@@ -1,0 +1,7 @@
+zzz=org.zhenchao.spi.ext5.impl.ExtensionImpl1
+org.zhenchao.spi.ext5.impl.ExtensionImpl2
+wrapper0=org.zhenchao.spi.ext5.impl.ExtensionWrapper
+111=org.zhenchao.spi.ext5.impl.ExtensionImpl3
+wrapper=org.zhenchao.spi.ext5.impl.ExtensionImpl4
+adaptive=org.zhenchao.spi.ext5.impl.ExtensionImpl5
+adaptive1=org.zhenchao.spi.ext5.impl.ExtensionAdapter

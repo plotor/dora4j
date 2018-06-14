@@ -1,0 +1,2 @@
+adaptive=org.zhenchao.spi.factory.AdaptiveExtensionFactory
+spi=org.zhenchao.spi.factory.SpiExtensionFactory

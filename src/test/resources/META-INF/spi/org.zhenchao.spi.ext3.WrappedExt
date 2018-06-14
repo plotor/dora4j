@@ -1,0 +1,4 @@
+impl1=org.zhenchao.spi.ext3.impl.ExtImpl1
+impl2=org.zhenchao.spi.ext3.impl.ExtImpl2
+wrapper1=org.zhenchao.spi.ext3.impl.ExtWrapperImpl1
+wrapper2=org.zhenchao.spi.ext3.impl.ExtWrapperImpl2

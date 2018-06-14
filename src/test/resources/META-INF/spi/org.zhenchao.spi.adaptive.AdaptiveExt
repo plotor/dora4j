@@ -1,0 +1,2 @@
+adaptive=org.zhenchao.spi.adaptive.impl.AdaptiveExtWithManualAdaptive
+impl1=org.zhenchao.spi.adaptive.impl.AdaptiveExtImpl1
