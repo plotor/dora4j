@@ -14,11 +14,21 @@ public class RunnableCallback implements Runnable, Callback, Shutdownable {
     public void run() {
     }
 
+    /**
+     * 当任务异常退出时执行该方法
+     *
+     * @param args
+     * @param <T>
+     * @return
+     */
     @Override
     public <T> Object execute(T... args) {
         return null;
     }
 
+    /**
+     * 当任务被 shutdown 时回调执行
+     */
     @Override
     public void shutdown() {
     }

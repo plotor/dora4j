@@ -46,7 +46,7 @@ public class AsyncLoopThread implements SmartThread {
             kill_fn = new AsyncLoopDefaultKill();
         }
 
-        // 基于 AsyncLoopRunnable 对于 afn 和 kfn 进行包装
+        // 采用 AsyncLoopRunnable 对于 afn 和 kfn 进行包装
         Runnable runnable = new AsyncLoopRunnable(afn, kill_fn);
         thread = new Thread(runnable);
         String threadName = afn.getThreadName();
