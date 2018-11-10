@@ -1,8 +1,8 @@
 ## doraemon
 
-哆啦A梦：抽象源码学习过程中一些好的设计思想和通用策略
+抽象源码学习过程中一些好的设计思想和通用策略。
 
-> - jdk: 1.8
+> - java: 1.8
 > - maven: 3.2.5
 
 ### Dubbo SPI
@@ -19,4 +19,53 @@ SPI(Service Provider Interfaces) 是 jdk1.5 引入的一种服务扩展内置机
 
 ### JStorm 线程模型
 
-// TODO 文档
+在整个 JStorm 的实现中有很多实现了 RunnableCallback 类的子类，这些类实例化之后都被传递给了 AsyncLoopThread 对象，示例如下：
+
+```java
+public class MyRunnableCallback extends RunnableCallback {
+
+    private static AtomicInteger count = new AtomicInteger();
+
+    @Override
+    public void run() {
+        System.out.println("[" + count.incrementAndGet() + "] thread-" + Thread.currentThread().getId() + " is running.");
+    }
+
+    @Override
+    public Object getResult() {
+        return 1;
+    }
+
+    public static void main(String[] args) {
+        MyRunnableCallback callback = new MyRunnableCallback();
+        new AsyncLoopThread(callback);
+    }
+}
+```
+
+上面的例子的执行效果是每间隔 1 秒会执行一遍 run 方法，输出如下：
+
+```text
+[1] thread-11 is running.
+[2] thread-11 is running.
+[3] thread-11 is running.
+```
+
+所以我们可以简单的理解其作用是简单方便的创建一个线程用于循环执行自定义的业务逻辑。本实现中我们将 getResult 方法修改为：
+
+```java
+/**
+ * 线程睡眠时间（单位：毫秒），默认为 0 表示不睡眠，如果设置为负数则表示只执行一次
+ *
+ * @return
+ */
+public long sleepMillis() {
+    return 0;
+}
+```
+
+从而更加清晰的表示该方法的意义，同时实现到毫秒级别的控制。
+
+进一步阅读：
+
+- [JStorm 源码解析：基础线程模型](https://github.com/plotor/ladder/blob/master/storm/storm-async-loop.md)

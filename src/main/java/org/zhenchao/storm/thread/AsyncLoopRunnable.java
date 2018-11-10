@@ -68,9 +68,9 @@ public class AsyncLoopRunnable implements Runnable {
                     throw e;
                 }
 
-                // 获取睡眠时间（单位：秒）
-                int seconds = fn.sleepSeconds();
-                if (this.needQuit(seconds)) {
+                // 获取睡眠时间（单位：毫秒）
+                long millis = fn.sleepMillis();
+                if (this.needQuit(millis)) {
                     this.shutdown();
                     return;
                 }
@@ -89,18 +89,18 @@ public class AsyncLoopRunnable implements Runnable {
      * 基于指定的间隔时间判定是否终止当前线程，
      * 如果设置了睡眠时间则不会终止，并执行睡眠
      *
-     * @param sleepTime
+     * @param sleepMillis
      * @return
      */
-    private boolean needQuit(int sleepTime) {
-        if (sleepTime != 0) {
-            if (sleepTime < 0) {
+    private boolean needQuit(long sleepMillis) {
+        if (sleepMillis != 0) {
+            if (sleepMillis < 0) {
                 // 未设置睡眠时间
                 return true;
             } else {
                 long now = System.currentTimeMillis();
                 long cost = now - lastTime;
-                long sleepMs = sleepTime * 1000 - cost; // 期望睡眠时间 - 中间消耗的时间
+                long sleepMs = sleepMillis - cost; // 期望睡眠时间 - 中间消耗的时间
                 if (sleepMs > 0) {
                     // 还没有达到期望睡眠时间，继续睡眠
                     ThreadUtils.sleepMillis(sleepMs);

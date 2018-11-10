@@ -20,8 +20,8 @@ public class AsyncLoopThreadTest {
         }
 
         @Override
-        public int sleepSeconds() {
-            return -1;
+        public long sleepMillis() {
+            return 1000;
         }
     }
 

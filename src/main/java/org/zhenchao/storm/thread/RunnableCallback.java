@@ -49,11 +49,11 @@ public class RunnableCallback implements Runnable, Callback, Shutdownable {
     }
 
     /**
-     * 线程睡眠时间（单位：秒），默认为 0 表示不睡眠，如果设置为负数则表示只执行一次
+     * 线程睡眠时间（单位：毫秒），默认为 0 表示不睡眠，如果设置为负数则表示只执行一次
      *
      * @return
      */
-    public int sleepSeconds() {
+    public long sleepMillis() {
         return 0;
     }
 
