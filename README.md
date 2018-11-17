@@ -15,7 +15,7 @@ SPI(Service Provider Interfaces) 是 jdk1.5 引入的一种服务扩展内置机
 
 进一步阅读：
 
-- [Dubbo 之于 SPI 扩展机制的实现分析](http://www.zhenchao.org/2017/12/17/dubbo-spi/)
+- [Dubbo 之于 SPI 扩展机制的实现分析](http://www.zhenchao.org/2017/12/17/rpc/dubbo-spi/)
 
 ### JStorm 线程模型
 
@@ -68,4 +68,4 @@ public long sleepMillis() {
 
 进一步阅读：
 
-- [JStorm 源码解析：基础线程模型](https://github.com/plotor/ladder/blob/master/storm/storm-async-loop.md)
+- [JStorm 源码解析：基础线程模型](http://www.zhenchao.org/2018/11/17/storm/storm-async-loop/)
