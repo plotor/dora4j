@@ -5,7 +5,7 @@
 
     <context:component-scan base-package="org.zhenchao"/>
 
-    <bean class="org.zhenchao.dubbo.spi.spring.AdaptiveBeanFactoryPostProcessor">
+    <bean class="org.zhenchao.dora.spi.spring.AdaptiveBeanFactoryPostProcessor">
         <property name="basePackage" value="org.zhenchao"/>
     </bean>
 </beans>
