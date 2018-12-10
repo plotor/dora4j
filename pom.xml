@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zhenchao</groupId>
-    <artifactId>doraemon</artifactId>
+    <artifactId>dora4j</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>doraemon</name>
+    <name>dora4j</name>
     <url>http://www.zhenchao.org</url>
 
     <properties>
