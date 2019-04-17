@@ -42,13 +42,13 @@ public class DefaultScheduler implements Scheduler {
         this.daemon = daemon;
     }
 
-    private ScheduledThreadPoolExecutor executor;
+    private volatile ScheduledThreadPoolExecutor executor;
     private AtomicInteger schedulerThreadId = new AtomicInteger(0);
 
     @Override
     public void startup() {
         log.info("Initializing the default task scheduler.");
-        synchronized (DefaultScheduler.class) {
+        synchronized (this) {
             if (this.isStarted()) {
                 throw new IllegalStateException("The default scheduler has already been started!");
             }
@@ -80,9 +80,7 @@ public class DefaultScheduler implements Scheduler {
 
     @Override
     public boolean isStarted() {
-        synchronized (DefaultScheduler.class) {
-            return null != executor;
-        }
+        return null != executor;
     }
 
     @Override
