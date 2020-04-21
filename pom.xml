@@ -18,6 +18,14 @@
         <spring.version>5.1.2.RELEASE</spring.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Maven Packages</name>
+            <url>https://maven.pkg.github.com/plotor/dora4j</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <!--apache commons-->
         <dependency>
