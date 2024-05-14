@@ -1,19 +1,15 @@
 package org.zhenchao.dora.schedule.timer;
 
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.zhenchao.dora.util.DateTimeUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.zhenchao.dora.util.TimeUtils;
 
 /**
  * @author zhenchao.wang 2019-04-18 15:30
@@ -25,7 +21,7 @@ public class DefaultTimerTest {
 
     @Before
     public void setUp() throws Exception {
-        timer = new DefaultTimer("test", 1, 3, DateTimeUtils.hiResClockMs());
+        timer = new DefaultTimer("test", 1, 3, TimeUtils.monotonicMillis());
     }
 
     @After

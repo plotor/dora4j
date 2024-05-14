@@ -1,7 +1,5 @@
 package org.zhenchao.dora.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,11 +9,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author zhenchao.wang 2018-03-15 15:18
- * @since 1.0.1
- */
-public class DateTimeUtils {
+import org.apache.commons.lang3.StringUtils;
+
+public class TimeUtils {
 
     public static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -24,7 +20,7 @@ public class DateTimeUtils {
     public static final DateTimeFormatter TF = DateTimeFormatter.ofPattern("HH:mm:ss");
     public static final DateTimeFormatter TF_HMS = DateTimeFormatter.ofPattern("HHmmss");
 
-    private DateTimeUtils() {
+    private TimeUtils() {
     }
 
     public static boolean isLocalDateTime(String dateTime, DateTimeFormatter pattern) {
@@ -53,52 +49,63 @@ public class DateTimeUtils {
         return false;
     }
 
+    /* millis <-> LocalDate */
+
     public static LocalDate millisToDate(long millis) {
-        return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate();
+        return millisToDate(millis, ZoneId.systemDefault());
     }
+
+    public static LocalDate millisToDate(long millis, ZoneId zone) {
+        return Instant.ofEpochMilli(millis).atZone(zone).toLocalDate();
+    }
+
+    public static long dateToMillis(LocalDate date) {
+        return dateToMillis(date, ZoneId.systemDefault());
+    }
+
+    public static long dateToMillis(LocalDate date, ZoneId zone) {
+        return date.atStartOfDay().atZone(zone).toInstant().toEpochMilli();
+    }
+
+    public static long dateToMillis(String date, DateTimeFormatter df) {
+        return dateToMillis(date, df, ZoneId.systemDefault());
+    }
+
+    public static long dateToMillis(String date, DateTimeFormatter df, ZoneId zone) {
+        return LocalDate.parse(date, df).atStartOfDay().atZone(zone).toInstant().toEpochMilli();
+    }
+
+    /* millis <-> LocalDateTime */
 
     public static LocalDateTime millisToDateTime(long millis) {
         return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    public static long dateTimeToMillis(String dateTime) {
-        return dateTimeToMillis(dateTime, DTF);
+    public static LocalDateTime millisToDateTime(long millis, ZoneId zone) {
+        return Instant.ofEpochMilli(millis).atZone(zone).toLocalDateTime();
     }
 
     public static long dateTimeToMillis(String dateTime, DateTimeFormatter dtf) {
-        return StringUtils.isNotBlank(dateTime) ?
-                LocalDateTime.parse(dateTime, dtf).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : System.currentTimeMillis();
+        return dateTimeToMillis(dateTime, dtf, ZoneId.systemDefault());
+    }
+
+    public static long dateTimeToMillis(String dateTime, DateTimeFormatter dtf, ZoneId zone) {
+        return LocalDateTime.parse(dateTime, dtf).atZone(zone).toInstant().toEpochMilli();
     }
 
     public static long dateTimeToMillis(LocalDateTime dateTime) {
         return null != dateTime ? dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : System.currentTimeMillis();
     }
 
-    public static long dateToMillis(String date) {
-        return dateToMillis(date, DF_YMD);
-    }
-
-    public static long dateToMillis(String date, DateTimeFormatter df) {
-        return StringUtils.isNotBlank(date) ?
-                LocalDate.parse(date, df).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : System.currentTimeMillis();
-    }
-
-    public static long dateToMillis(LocalDate date) {
-        return null != date ? date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() : System.currentTimeMillis();
-    }
-
     public static long toMillis(String value) {
-        if (StringUtils.isBlank(value)) {
-            return -1L;
-        }
         if (isLocalDateTime(value, DTF)) {
-            return dateTimeToMillis(value);
+            return dateTimeToMillis(value, DTF);
         } else if (isLocalDate(value, DF)) {
             return dateToMillis(value, DF);
         } else if (isLocalDate(value, DF_YMD)) {
             return dateToMillis(value, DF_YMD);
         } else {
-            throw new IllegalArgumentException(value + " can't be cast to millis, unknown format : " + value);
+            throw new IllegalArgumentException(value + " can't be cast to millis, unknown format: " + value);
         }
     }
 
@@ -107,7 +114,7 @@ public class DateTimeUtils {
             return Optional.empty();
         }
         if (isLocalDateTime(value, DTF)) {
-            return Optional.of(dateTimeToMillis(value));
+            return Optional.of(dateTimeToMillis(value, DTF));
         } else if (isLocalDate(value, DF)) {
             return Optional.of(dateToMillis(value, DF));
         } else if (isLocalDate(value, DF_YMD)) {
@@ -143,7 +150,7 @@ public class DateTimeUtils {
             LocalDate localDate = LocalDate.parse(value, DF_YMD);
             return localDate.atStartOfDay();
         } else {
-            throw new IllegalArgumentException(value + " can't be cast to local date time, unknown format : " + value);
+            throw new IllegalArgumentException(value + " can't be cast to local date time, unknown format: " + value);
         }
     }
 
@@ -162,12 +169,23 @@ public class DateTimeUtils {
         }
     }
 
-    public static void sleep(long timeout, TimeUnit unit) {
-        try {
-            unit.sleep(timeout);
-        } catch (InterruptedException e) {
-            // ignore
+    public static boolean sleep(long timeout, TimeUnit unit) {
+        final long start = monotonicMillis();
+        final long intervals = unit.toMillis(timeout);
+        if (intervals > 100L) {
+            try {
+                unit.sleep(timeout);
+            } catch (InterruptedException e) {
+                // just wake up early
+                Thread.currentThread().interrupt();
+                return true;
+            }
+        } else {
+            while (monotonicMillis() - start < intervals) {
+                // spin for a while
+            }
         }
+        return false;
     }
 
     public static long intervalDaysBetween(LocalDate inclusive, LocalDate exclusive) {
@@ -186,15 +204,21 @@ public class DateTimeUtils {
         return inclusive.until(exclusive, unit);
     }
 
-    public static long milliseconds() {
-        return System.currentTimeMillis();
+
+    public static long monotonicMillis() {
+        return TimeUnit.NANOSECONDS.toMillis(nanoseconds());
     }
 
-    public static long hiResClockMs() {
-        return TimeUnit.NANOSECONDS.toMillis(nanoseconds());
+    public static long monotonicMicros() {
+        return TimeUnit.NANOSECONDS.toMicros(nanoseconds());
+    }
+
+    public static long milliseconds() {
+        return System.currentTimeMillis();
     }
 
     public static long nanoseconds() {
         return System.nanoTime();
     }
+
 }

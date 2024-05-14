@@ -1,13 +1,13 @@
 package org.zhenchao.dora.schedule.purgatory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.zhenchao.dora.util.DateTimeUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.zhenchao.dora.util.TimeUtils;
 
 /**
  * @author zhenchao.wang 2019-06-22 12:27
@@ -51,7 +51,7 @@ public class DelayedTaskPurgatoryTest {
     @Test
     public void requestExpiry() {
         long expiration = 20L;
-        long start = DateTimeUtils.hiResClockMs();
+        long start = TimeUtils.monotonicMillis();
         MockDelayedTask r1 = new MockDelayedTask(expiration);
         MockDelayedTask r2 = new MockDelayedTask(200000L);
         List<Object> watchKeys = new ArrayList<>();
@@ -61,7 +61,7 @@ public class DelayedTaskPurgatoryTest {
         watchKeys.add("test2");
         Assert.assertFalse("r2 not satisfied and hence watched", purgatory.tryCompleteElseWatch(r2, watchKeys));
         r1.awaitExpiration();
-        long elapsed = DateTimeUtils.hiResClockMs() - start;
+        long elapsed = TimeUtils.monotonicMillis() - start;
         Assert.assertTrue("r1 completed due to expiration", r1.isCompleted());
         Assert.assertFalse("r2 hasn't completed", r2.isCompleted());
         Assert.assertTrue("Time for expiration elapsed should at least expiration", elapsed >= expiration);

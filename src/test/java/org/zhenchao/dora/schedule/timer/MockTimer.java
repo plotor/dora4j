@@ -1,6 +1,6 @@
 package org.zhenchao.dora.schedule.timer;
 
-import org.zhenchao.dora.util.DateTimeUtils;
+import org.zhenchao.dora.util.TimeUtils;
 
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +25,7 @@ public class MockTimer implements Timer {
 
     @Override
     public boolean advanceClock(long timeoutMs) {
-        DateTimeUtils.sleep(timeoutMs, TimeUnit.MILLISECONDS);
+        TimeUtils.sleep(timeoutMs, TimeUnit.MILLISECONDS);
         boolean executed = false;
         long now = System.currentTimeMillis();
 

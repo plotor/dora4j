@@ -1,17 +1,13 @@
 package org.zhenchao.dora.schedule.timer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zhenchao.dora.util.DateTimeUtils;
-import org.zhenchao.dora.util.ThreadUtils;
-
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zhenchao.dora.util.ThreadUtils;
+import org.zhenchao.dora.util.TimeUtils;
 
 /**
  * @author zhenchao.wang 2019-04-17 18:41
@@ -26,7 +22,7 @@ public class DefaultTimer implements Timer {
     /** 一个时间格的时间跨度，最小为 1 毫秒 */
     private long tickMs = 1L;
     private int wheelSize = 20;
-    private long startMs = DateTimeUtils.hiResClockMs();
+    private long startMs = TimeUtils.monotonicMillis();
 
     /** 执行任务的线程池 */
     private ExecutorService taskExecutor = Executors.newFixedThreadPool(1, new ThreadFactory() {
@@ -66,7 +62,7 @@ public class DefaultTimer implements Timer {
         try {
             // 添加定时任务，如果任务已经到期但未被取消，则立即提交执行
             log.info("Add timer task, executor[{}], delay[{}ms]", executorName, timerTask.getDelayMs());
-            this.addTimerTaskNode(new TimerTaskNode(timerTask, timerTask.getDelayMs() + DateTimeUtils.hiResClockMs()));
+            this.addTimerTaskNode(new TimerTaskNode(timerTask, timerTask.getDelayMs() + TimeUtils.monotonicMillis()));
         } finally {
             readLock.unlock();
         }

@@ -1,12 +1,12 @@
 package org.zhenchao.dora.schedule.timer;
 
-import org.zhenchao.dora.util.DateTimeUtils;
-
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+
+import org.zhenchao.dora.util.TimeUtils;
 
 /**
  * 时间格，对应时间轮中的一格
@@ -112,7 +112,7 @@ public class TimingGrid implements Delayed {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(Math.max(this.getExpiration() - DateTimeUtils.hiResClockMs(), 0L), TimeUnit.MILLISECONDS);
+        return unit.convert(Math.max(this.getExpiration() - TimeUtils.monotonicMillis(), 0L), TimeUnit.MILLISECONDS);
     }
 
     @Override
